@@ -1,27 +1,31 @@
 import socket
 import threading
 
-def receive_messages(client_socket):
-    while True:
-        data = client_socket.recv(1024)
-        if not data:
-            break
-        message = data.decode('utf-8')
-        print(f"Received message: {message}")
 
-def main():
+def connect_to_server(host='127.0.0.1', port=8081):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    host = '127.0.0.1'
-    port = 8081
     client_socket.connect((host, port))
+    return client_socket
 
-    receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
-    receive_thread.start()
+def disconnect_from_server(client_socket):
+    try:
+        client_socket.shutdown(socket.SHUT_RDWR)
+        client_socket.close()  # Soketi kapat
+    except Exception as e:
+        print(f"Error during shutdown: {e}")
 
-    while True:
-        message = input("Enter your message: ")
+def send_message(client_socket, message):
+    try:
         client_socket.sendall(message.encode('utf-8'))
+    except Exception as e:
+        print(f"Error sending message: {e}")
 
-if __name__ == "__main__":
-    main()
+def receive_message(client_socket):
+    try:
+        message = client_socket.recv(1024).decode('utf-8')
+        if not message:
+            raise ConnectionError("Connection closed by the server.")
+        return message
+    except Exception as e:
+        print(f"Error receiving message: {e}")
+        raise
