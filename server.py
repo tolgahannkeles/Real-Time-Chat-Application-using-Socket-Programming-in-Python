@@ -29,6 +29,7 @@ class Server:
             except ConnectionResetError:
                 print(f"Connection with {username} was forcibly closed.")
                 self.active_clients.remove((username, client))
+                self.send_message_to_all(f"Server{self.splitting_char}{username} has left the chat.")
                 break
             except Exception as e:
                 print(f"An error occurred: {e}")

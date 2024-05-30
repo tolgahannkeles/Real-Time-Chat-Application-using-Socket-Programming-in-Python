@@ -44,7 +44,7 @@ class ChatClientUI:
         message_field.pack(side=tk.LEFT, expand=True, fill='both', padx=10, pady=10)
         add_placeholder(message_field, 'Enter your message here...')
         # Create a submit button
-        button = tk.Button(self.root, text="Submit",
+        button = tk.Button(self.root, text="Send Message",
                            command=lambda: self.send_message(message_field.get(), message_field=message_field))
         button.pack(side=tk.LEFT, padx=10, pady=10)
 
